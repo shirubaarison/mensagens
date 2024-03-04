@@ -1,0 +1,21 @@
+{
+  "name": "mensagens-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Alysson Silva",
+  "license": "MIT",
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "express": "^4.18.3",
+    "mongoose": "^8.2.0"
+  }
+}
