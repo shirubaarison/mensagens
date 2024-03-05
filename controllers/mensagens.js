@@ -26,9 +26,10 @@ mensagensRouter.post('/', async (request, response) => {
     response.status(201).json(mensagemSalva)
 })
 
-mensagensRouter.delete('/:id', async (request, response) => {
+mensagensRouter.delete('/:id', async (request, response) => {    
     try {
-        await Mensagem.findById(request.params.id)
+        await Mensagem.findByIdAndDelete(request.params.id)
+        return response.status(204).end()
     } catch (error) {
         return response.status(404).end()
     }
