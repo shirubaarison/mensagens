@@ -1,5 +1,6 @@
 const mensagensRouter = require('express').Router()
 const Mensagem = require('../models/mensagem')
+const { getConnectedClients } = require('../sockets/webSocketServer')
 
 mensagensRouter.get('/', async (request, response) => {
     const mensagens = await Mensagem.find({})
@@ -33,6 +34,12 @@ mensagensRouter.delete('/:id', async (request, response) => {
     } catch (error) {
         return response.status(404).end()
     }
+})
+
+mensagensRouter.get('/usuariosConectados', async (request, response) => {
+    const valores = getConnectedClients()
+    
+    return response.json(valores)
 })
 
 module.exports = mensagensRouter
