@@ -30,16 +30,23 @@ mensagensRouter.post('/', async (request, response) => {
 mensagensRouter.delete('/:id', async (request, response) => {    
     try {
         await Mensagem.findByIdAndDelete(request.params.id)
-        return response.status(204).end()
+        response.status(204).end()
     } catch (error) {
-        return response.status(404).end()
+        response.status(404).end()
     }
 })
 
 mensagensRouter.get('/usuariosConectados', async (request, response) => {
     const valores = getConnectedClients()
     
-    return response.json(valores)
+    response.json(valores)
+})
+
+mensagensRouter.post('/reset', async(request, response) => {
+    await Mensagem.deleteMany({})
+
+    console.log('reset')
+    response.status(204).end()
 })
 
 module.exports = mensagensRouter
