@@ -2,7 +2,10 @@ const mongoose = require('mongoose')
 
 const mensagemSchema = new mongoose.Schema({
     mensagem: String,
-    autor: String, 
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 })
 
 mensagemSchema.set('toJSON', {
