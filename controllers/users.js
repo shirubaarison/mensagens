@@ -11,8 +11,7 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
     const { username, password } = request.body
     
-    if (!password || !username) return response.status(400).json({ error: 'missing username and/or password' })
-    if (password.length < 3) return response.status(400).json({ error: 'password must be more than 3 characters' })
+    if (!password || !username) return response.status(400).json({ error: 'ta faltando username ou a senha' })
 
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)
@@ -22,9 +21,14 @@ usersRouter.post('/', async (request, response) => {
         passwordHash
     })
 
-    const savedUser = await user.save()
-
-    response.status(201).json(savedUser)
+    try {
+        const savedUser = await user.save()
+        return response.status(201).json(savedUser)
+    } catch (err) {
+        if (err.name === 'ValidationError') {
+            return response.status(400).json({ error: "usuario ja existe pai..." })
+        }
+    }
 })
 
 
