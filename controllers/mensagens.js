@@ -1,39 +1,74 @@
 const mensagensRouter = require('express').Router()
 const Mensagem = require('../models/mensagem')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 const { getConnectedClients } = require('../sockets/webSocketServer')
 
+const getTokenFrom = request => {
+    const auth = request.get('authorization')
+    if (auth && auth.startsWith('Bearer ')) {
+        return auth.replace('Bearer ', '')
+    }
+
+    return null
+}
+
+
 mensagensRouter.get('/', async (request, response) => {
-    const mensagens = await Mensagem.find({})
+    const mensagens = await Mensagem.find({}).populate('user', { username: 1})
 
     response.json(mensagens)
 })
 
 mensagensRouter.post('/', async (request, response) => {
-    const body = request.body
-    console.log(body)
-    const { mensagem, autor } = request.body
+    console.log(request.body)
+    
+    const { mensagem } = request.body
 
-    if (!mensagem || !autor) {
+    if (!mensagem) {
         return response.status(400).end()
     }
+    
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: 'token invalid' })
+	}
+    
+    const user = await User.findById(decodedToken.id)
 
     const novaMensagem = new Mensagem({
         mensagem: mensagem,
-        autor: autor
+        user: user.id
     })
 
     const mensagemSalva = await novaMensagem.save()
+    user.mensagens = user.mensagens.concat(mensagemSalva._id)
+	await user.save()
+
+    await mensagemSalva.populate('user', { username: 1 })
 
     response.status(201).json(mensagemSalva)
 })
 
 mensagensRouter.delete('/:id', async (request, response) => {    
-    try {
-        await Mensagem.findByIdAndDelete(request.params.id)
-        response.status(204).end()
-    } catch (error) {
-        response.status(404).end()
-    }
+    const mensagem = await Mensagem.findById(request.params.id)
+	if (!mensagem) {
+		return response.status(404).end()
+	}
+    
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: 'token invalid' })
+	}
+
+    const user = await User.findById(decodedToken.id)
+
+    if (mensagem.user.toString() !== user.id) {
+		return response.status(401).end()
+	}
+
+    await Mensagem.findByIdAndDelete(request.params.id)
+	return response.status(204).end()
 })
 
 mensagensRouter.get('/usuariosConectados', async (request, response) => {
