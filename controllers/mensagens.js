@@ -12,7 +12,6 @@ const getTokenFrom = request => {
     return null
 }
 
-
 mensagensRouter.get('/', async (request, response) => {
     const mensagens = await Mensagem.find({}).populate('user', { username: 1})
 
