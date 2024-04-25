@@ -9,7 +9,6 @@ const getTokenFrom = request => {
     if (auth && auth.startsWith('Bearer ')) {
         return auth.replace('Bearer ', '')
     }
-
     return null
 }
 
@@ -31,7 +30,7 @@ mensagensRouter.post('/', async (request, response) => {
     
     const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
 	if (!decodedToken.id) {
-		return response.status(401).json({ error: 'token invalid' })
+		return response.status(401).json({ error: 'Token inválido' })
 	}
     
     const user = await User.findById(decodedToken.id)
@@ -58,7 +57,7 @@ mensagensRouter.delete('/:id', async (request, response) => {
     
     const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
 	if (!decodedToken.id) {
-		return response.status(401).json({ error: 'token invalid' })
+		return response.status(401).json({ error: 'Token inválido' })
 	}
 
     const user = await User.findById(decodedToken.id)

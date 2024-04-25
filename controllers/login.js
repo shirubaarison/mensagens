@@ -12,7 +12,7 @@ loginRouter.post('/', async (request, response) => {
 
     if (!(user && passwordCorrect)) {
         return response.status(401).json({
-            error: 'incorrect username or password'
+            error: 'Nome de usuário ou senha incorreto(s)'
         })
     }
 
@@ -24,8 +24,8 @@ loginRouter.post('/', async (request, response) => {
     const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60*60 })
 
     response
-    .status(200)
-    .send({ token, username: user.username, name: user.name })
+        .status(200)
+        .send({ token, username: user.username, name: user.name })
 })
 
 module.exports = loginRouter

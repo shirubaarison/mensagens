@@ -6,7 +6,7 @@ const startWebSocketServer = () => {
     const wss = new WebSocket.Server({ port: 3002 })
 
     wss.on('connection', (ws) => {
-        console.log('new websocket connection')
+        console.log('nova conexão no webSocket')
 
         connectedClients.add(ws)
 
@@ -21,7 +21,7 @@ const startWebSocketServer = () => {
         })
 
         ws.on('close', () => {
-            console.log('client disconnected')
+            console.log('client desconectado')
             connectedClients.delete(wss)
         })
     })
