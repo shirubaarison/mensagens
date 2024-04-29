@@ -28,7 +28,7 @@ mensagensRouter.post('/', async (request, response) => {
     if (!token)
         return response.status(401).end()
 
-    const decodedToken = jwt.verify(token, process.env.SECRET)
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
 	if (!decodedToken.id)
 		return response.status(401).json({ error: 'Token inválido' })
 	
@@ -58,7 +58,7 @@ mensagensRouter.delete('/:id', async (request, response) => {
     if (!token) 
         return response.status(401).end()
     
-    const decodedToken = jwt.verify(token, process.env.SECRET)
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
 	
     if (!decodedToken.id)
 		return response.status(401).json({ error: 'Token inválido' })
