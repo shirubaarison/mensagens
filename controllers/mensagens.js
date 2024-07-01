@@ -2,7 +2,6 @@ const mensagensRouter = require('express').Router()
 const Mensagem = require('../models/mensagem')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-const { getConnectedClients } = require('../sockets/webSocketServer')
 
 const getTokenFrom = request => {
     const auth = request.get('authorization')
@@ -71,12 +70,6 @@ mensagensRouter.delete('/:id', async (request, response) => {
     await Mensagem.findByIdAndDelete(request.params.id)
 	
     return response.status(204).end()
-})
-
-mensagensRouter.get('/usuariosConectados', async (request, response) => {
-    const valores = getConnectedClients()
-    
-    response.json(valores)
 })
 
 module.exports = mensagensRouter

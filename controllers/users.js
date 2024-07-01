@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const usersRouter = require('express').Router() 
+const { getConnectedClients } = require('../sockets/webSocketServer')
 
 usersRouter.get('/', async (request, response) => {
     const users = await User.find({})
@@ -32,5 +33,11 @@ usersRouter.post('/', async (request, response) => {
     }
 })
 
+
+usersRouter.get('/usuariosConectados', async (request, response) => {
+    const valores = getConnectedClients()
+    
+    response.json(valores)
+})
 
 module.exports = usersRouter
