@@ -32,6 +32,14 @@ const startWebSocketServer = () => {
         ws.on('close', (code, data) => {
             console.log('client desconectado: ', ws.user)
             connectedClients.delete(ws.user)
+
+            const message = JSON.stringify({ saiuUser: ws.user })
+
+            wss.clients.forEach(client => {
+                if (client !== ws && client.readyState === WebSocket.OPEN) {
+                    client.send(message)
+                }
+            })
         })
     })
 
